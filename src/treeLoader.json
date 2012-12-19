@@ -1,0 +1,23 @@
+{
+	"root": {
+		"root": true;
+		"children" : 
+		[
+			{
+				"label" : "child 1"
+				"children" : [
+					{
+						"label":"child 2"
+					}
+				]
+			},
+			{
+				"label" : "child 1"
+				"children" : [
+					{
+						"label":"child 2"
+					}
+				]
+			}	
+		]
+}
