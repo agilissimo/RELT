@@ -12,17 +12,6 @@ public class Relt2Html {
 	final int NNODES = 5;
 	ReltFileWRiter fw;
 
-
-	private BasicTree tree;
-	private BasicNode story = new BasicNode();
-	private BasicNode[] features = new BasicNode[NNODES];
-	private BasicNode[] tasks = new BasicNode[NNODES];
-	private BasicNode[] subtasks = new BasicNode[NNODES];
-	
-	public Relt2Html () {
-		InitialTree();
-	}
-
 	public void generateHtml(ArrayList<NodeArea> areas, String fileName,int sizeX,int sizeY, int leftMargin, int topMargin) {
 		
 		ReltFileWRiter fw = new ReltFileWRiter(fileName);
@@ -79,43 +68,8 @@ public class Relt2Html {
 			}
 		}
 		fw.write("  </script>");
-
 		
 		fw.close();
 	}
-	
-	public BasicTree getTree() {
-		return this.tree;
-	}
-	public void InitialTree() {
-		BasicReltItem item = new BasicReltItem("STORYID");
-		story.setItem(item);
-		tree = new BasicTree(story);
 		
-		int i=0;
-		do {
-			BasicReltItem it0 = new BasicReltItem("feature-"+i);
-			BasicReltItem it1 = new BasicReltItem("task-"+i);
-			BasicReltItem it2= new BasicReltItem("subtask-"+i);
-
-			
-			BasicNode task = new BasicNode(it1);
-			tasks[i]= task; 
-			BasicNode subtask = new BasicNode(it2);
-			subtasks[i]= subtask; 
-			BasicNode feature = new BasicNode(it0);
-			features[i]= feature; 
-			tree.addNode(feature);
-			i++;
-		}while(i< NNODES);
-		
-		tree.addNode(features[0],tasks[0]);
-		tree.addNode(features[0],tasks[1]);
-		tree.addNode(features[0],tasks[2]);
-		
-		tree.addNode(tasks[1],subtasks[0]);
-		tree.addNode(tasks[1],subtasks[1]);
-		tree.addNode(tasks[0],subtasks[2]);
-		
-	}
 }

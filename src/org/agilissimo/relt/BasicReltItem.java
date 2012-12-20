@@ -10,7 +10,6 @@
  */
 package org.agilissimo.relt;
 
-import org.agilissimo.tree.Item;
 /**
  * This is an example implementation of ReltItem to demonstrate the
  * RELT algorithm. ReltItems can be of course more complex that only

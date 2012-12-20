@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
 
-
-
-import org.agilissimo.tree.ItemInjection;
 import org.agilissimo.tree.Node;
 import org.agilissimo.tree.Tree;
 import org.apache.log4j.Logger;
@@ -30,54 +27,69 @@ public class Relt {
 
 	private ArrayList<NodeArea> areas;
 	private Tree tree;
-	private RectArea screen;
+	private int drawAreaWidth;
+	private int drawAreaHeight;
 
 	private LineTracker leftLineTracker = new LineTracker();
 	private LineTracker rightLineTracker = new LineTracker();
-	public Relt(Tree tree, RectArea screen) {
+	public Relt(Tree tree, int width, int height) {
 		areas = new ArrayList<NodeArea>();
 		this.tree = tree;
-		
-		this.screen = screen;
+		this.drawAreaWidth= width;
+		this.drawAreaHeight = height;
 	}
 
+	public ArrayList<NodeArea> computeAreas(Tree tree) {
+		this.tree = tree;
+		return computeAreas() ;
+	}
+	/**
+	 * Computes the areas for each node. Mainly it draws, calculates the area for the
+	 * root of the tree, performs major initialization steps and calls DrawChildren in order to
+	 * draw,calculate the areas for all the children
+	 * @return The list of node areas
+	 */
 	public ArrayList<NodeArea> computeAreas() {
-		
+		// the weight of the current level
 		float levelWeight;
+		// step in the X-direction while drawing
 		double stepX;
+		// the current level we are processing
 		int currentLevel;
-		
-		int width = (int)screen.getSizeX();
-		int height =  (int)screen.getSizeY();
-		Point currentLocation = new Point();
-		Point currentY = new Point();
 
+		if (!tree.getRoot().hasChildren()) return null;
+		
 		// Initialisation
 		this.areas.clear();
 		calculateNodeWeights();
 		currentLevel=0;
-		currentLocation.setLocation(new Point(0,0));
-		currentY.setLocation(new Point(0,0));
 		
 		// Process the levels of the tree
 		levelWeight = tree.getLevelWeight(currentLevel)-1;
 		//draw roor and get its children
-		NodeArea area = drawRoot((int) (levelWeight*width));
+		NodeArea area = drawRoot((int) (levelWeight*drawAreaWidth));
 		areas.add(area);
-		leftLineTracker.setCorner(new Point((levelWeight*width),(levelWeight*height)));
+		leftLineTracker.setCorner(new Point((levelWeight*drawAreaWidth),(levelWeight*drawAreaHeight)));
 
 		currentLevel = 1;
 		levelWeight = tree.getLevelWeight(currentLevel)-1;
-		int numOfChildren = tree.getRoot().numberOfChildren();
-		stepX = (levelWeight*width);
-		rightLineTracker.setCorner(new Point( (stepX+leftLineTracker.getCorner().getX()), (height*levelWeight)));
+		stepX = (levelWeight*drawAreaWidth);
+		rightLineTracker.setCorner(new Point( (stepX+leftLineTracker.getCorner().getX()), leftLineTracker.getCorner().getY()+drawAreaHeight*levelWeight));
 		drawChildren(tree.getRoot(), leftLineTracker, rightLineTracker);
 		
 		return areas;
 	}
 	
 
-	
+	/**
+	 * RELT is implemented in this method which calls it recursively for each
+	 * node that has children in order to draw its children. The method mainly follows a left
+	 * and a right line (moves along the left and right borders of the level)  and draws each node
+	 * based on its weight e.g. how much space it needs. 
+	 * @param node The starting node, for the calculation. 
+	 * @param left	The left line tracker
+	 * @param right The right line tracker
+	 */
 	public  void drawChildren(Node node, LineTracker left, LineTracker right) {
 		LineTracker leftLineTracker = new LineTracker();;
 		LineTracker rightLineTracker = new LineTracker();;
@@ -93,7 +105,7 @@ public class Relt {
 		
 		int stepYRight, stepYLeft;
 
-		Iterator iterator=node.iterator();
+		Iterator<Node> iterator=(Iterator<Node>) node.iterator();
 
 		Point previousA = new Point(leftLineTracker.getUp());
 		Point previousB = new Point(rightLineTracker.getUp());
@@ -118,13 +130,17 @@ public class Relt {
 			Point b = rightLineTracker.move(stepYRight);
 			ReltItem item = (ReltItem) node.getItem();
 			Point labelPosition = new Point((previousA.getX()+b.getX())/2, (previousA.getY()+b.getY())/2);
+			//Point labelPosition = new Point(b);
+
 
 			area.setLabel(item.getLabel());
 			area.setLabelPosition(labelPosition);
 			double dy = b.getY() - a.getY();
 			double dx = b.getX() - a.getX();
 			double orientation = Math.atan2(dy,dx);
-			orientation *= 180*Math.PI;
+			//orientation *= Math.PI;
+			//LOGGER.debug("Line ("+(int) a.getX()+","+(int) a.getY()+") - ("+(int) b.getX()+","+(int) b.getY()+")");
+			//LOGGER.debug("Orientation (Radians): "+(int) orientation+" degrees");
 			area.setOrientation((float)orientation);
 			drawLine(area, a,b);
 
@@ -139,9 +155,8 @@ public class Relt {
 					first = false;
 
 				}
-				
 				float levelWeight = tree.getLevelWeight((node.getLevel())+1)-1;
-				double stepX = levelWeight*screen.getSizeX();
+				double stepX = levelWeight*drawAreaWidth;
 				
 				LineTracker tmpLeftLineTracker = new LineTracker();
 				LineTracker tmpRightLineTracker = new LineTracker();
@@ -210,8 +225,8 @@ public class Relt {
 		double offset = a.getY() - a.getX()*slope;
 		y = refX*slope + offset;
 		
-		if (y > screen.getSizeY()) {
-			y = screen.getSizeY();
+		if (Math.abs(y) > drawAreaHeight) {
+			y = drawAreaHeight;
 			p.setLocation((y - offset)/slope,y); 
 		}
 		else {
@@ -230,7 +245,7 @@ public class Relt {
 		currentLocation.setLocation(drawLine(area, currentLocation,nextLocation));
 		ReltItem item = (ReltItem) tree.getRoot().getItem();
 		area.setLabel(item.getLabel());
-		area.setLabelPosition(new Point(step/2,step/2-10));
+		area.setLabelPosition(new Point(5,step/2));
 		// draw from top to bottom
 		nextLocation.setLocation(currentLocation.getX(),currentLocation.getY()+step);
 		currentLocation.setLocation(drawLine(area, currentLocation,nextLocation));

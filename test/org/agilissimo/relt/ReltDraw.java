@@ -16,23 +16,7 @@ public class ReltDraw extends JPanel{
 	private ArrayList<NodeArea> areas;
 	private int leftMargin,topMargin;
 	
-	private class RotatedTextArea extends JPanel {
-		private double angle;
-		
-		public RotatedTextArea( double angle) {
-			this.angle = angle;
-		}
-		
-		public void paintComponent(Graphics g) {
-			Graphics2D g2d = (Graphics2D) g;
-			
-			g2d.rotate(angle);
-			super.paint(g);
-		}
-		public void setAngle(double angle) {
-			this.angle = angle;
-		}
-	}
+
 	
 	ReltDraw(ArrayList<NodeArea> areas, int leftMargin,int topMargin) {
 		this.areas = areas;
@@ -46,22 +30,11 @@ public class ReltDraw extends JPanel{
 		Logger l =  Logger.getLogger(ReltDraw.class.getName());
 		Graphics2D  g2d = (Graphics2D) g;
 		for (NodeArea area: areas) {
-			JPanel textPanel = new RotatedTextArea(area.getOrientation());
-			JTextArea textArea = new JTextArea(area.getLabel(),5,20);
-			textArea.setEditable(false);
-			textArea.setText(area.getLabel());
-			textPanel.setSize(5,30);
-			java.awt.Point p = new java.awt.Point();
-			p.setLocation(area.getLabelPosition().getX()+leftMargin, area.getLabelPosition().getY()+topMargin);
-			textPanel.setLocation(p);
-			textPanel.add(textArea);
-
-			textPanel.setVisible(true);
+	
 			
 			g2d.drawString(area.getLabel(), (int) area.getLabelPosition().getX()+leftMargin, (int) area.getLabelPosition().getY()+topMargin);
 
 			
-			this.add(textPanel);
 			ArrayList<Line> lines = area.getLines();
 			l.debug("Area "+ area.getLabel());
 			for(Line line: lines) {

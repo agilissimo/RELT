@@ -1,3 +1,5 @@
+
+
 package org.agilissimo.tree;
 
 import java.util.ArrayList;
@@ -34,14 +36,6 @@ public class BasicTree implements Tree{
 	private float[] weightOfLevel;
 
 	
-	public BasicTree() {
-		root = new BasicNode(true);
-		root.setLevel(0);
-		numberOfNodes=1;
-		numberOfEdges = 0;
-		edges = new HashSet<Edge>();
-		depth = 1;
-	}
 	public BasicTree(Node root) {
 		this.root = root;
 		this.root.setLevel(0);

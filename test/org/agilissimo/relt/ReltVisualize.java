@@ -1,15 +1,17 @@
 package org.agilissimo.relt;
+import javax.naming.InitialContext;
 import javax.swing.JFrame;
 
 import org.agilissimo.tree.Item;
 import org.agilissimo.tree.BasicNode;
 import org.agilissimo.tree.BasicTree;
+import org.agilissimo.tree.Node;
+import org.agilissimo.tree.Tree;
 
 import java.awt.Graphics;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import com.cedarsoftware.util.io.*;
 /**
  * Use this class to test and view the tree creation
  * @author ios
@@ -17,83 +19,73 @@ import com.cedarsoftware.util.io.*;
  */
 public class ReltVisualize {
 
+	final int NNODES = 3;
+	private BasicTree tree;
+	private BasicNode story = new BasicNode();
+	private BasicNode[] features = new BasicNode[NNODES];
+	private BasicNode[] tasks = new BasicNode[NNODES];
+	private BasicNode[] subtasks = new BasicNode[NNODES];
+	
+	
+	public void InitialTree() {
+		BasicReltItem item = new BasicReltItem("This is the story");
+		story.setItem(item);
+		tree = new BasicTree(story);
+		
+		int i=0;
+		do {
+			BasicReltItem it0 = new BasicReltItem("feature-"+i);
+			BasicReltItem it1 = new BasicReltItem("task-"+i);
+			BasicReltItem it2= new BasicReltItem("subtask-"+i);
+
+			
+			BasicNode task = new BasicNode(it1);
+			tasks[i]= task; 
+			BasicNode subtask = new BasicNode(it2);
+			subtasks[i]= subtask; 
+			BasicNode feature = new BasicNode(it0);
+			features[i]= feature; 
+			tree.addNode(feature);
+			i++;
+		}while(i< NNODES);
+		
+		tree.addNode(features[0],tasks[0]);
+		tree.addNode(features[0],tasks[1]);
+		tree.addNode(features[0],tasks[2]);
+		
+		tree.addNode(tasks[1],subtasks[0]);
+		tree.addNode(tasks[1],subtasks[1]);
+		tree.addNode(tasks[0],subtasks[2]);
+		
+	}
+	
+	public BasicTree getTree() {
+		return this.tree;
+	}
+	
 	public static void main(String[] args) {
 		JFrame j = new JFrame();
 		j.setDefaultCloseOperation(j.EXIT_ON_CLOSE);
-		j.setTitle("Experimental RELT");
-	
+		j.setTitle("Visualization of RELT");
 		
-		BasicNode node = new BasicNode();
-		BasicTree tree = new BasicTree(node);
-		BasicReltItem item = new BasicReltItem("I want to RELT a tree");
-		node.setItem(item);
-
-
-		BasicNode child1 = new BasicNode();
-		BasicReltItem item1 = new BasicReltItem("child01");
-		child1.setItem(item1);
-		
-		BasicNode child2 = new BasicNode();
-		BasicReltItem item2 = new BasicReltItem("child02");
-		child2.setItem(item2);
-		
-
-		BasicNode child3 = new BasicNode();
-		BasicReltItem item3 = new BasicReltItem("child03");
-		child3.setItem(item3);
-
-		BasicNode child4 = new BasicNode();
-		BasicReltItem item4 = new BasicReltItem("child04");
-		child4.setItem(item4);
-		
-		BasicNode child5 = new BasicNode();
-		BasicReltItem item5 = new BasicReltItem("child05");
-		child5.setItem(item5);
-		
-		tree.addNode(child1);
-		tree.addNode(child2);
-
-		tree.addNode(child1,child3);
-
-		tree.addNode(child4);
-		tree.addNode(child4, child5);
-
-		String jsonString = JsonWriter.toJson(tree);
-		System.out.println(jsonString);
-
-		FileOutputStream foStream;
-		File file;
-		
-		try {
-			file = new File("tree.json");
-			foStream = new FileOutputStream(file);
+		ReltVisualize v = new ReltVisualize();
 			
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			byte[] stringInByte = jsonString.getBytes();
-			
-			foStream.write(stringInByte);
-			foStream.flush();
-			foStream.close();
-			
-		}catch (Exception e) {
-			// TODO: handle exception
-		}			
-		
-		//tree.addNode(child5);
-		
+		v.InitialTree();
+		// use RectArea helper class to simulate screen
 		RectArea screen = new RectArea();
-		screen.setSizeX(500);
-		screen.setSizeY(500);
+		screen.setSizeX(800);
+		screen.setSizeY(800);
 		
-		Relt relt = new Relt(tree, 500,500);
+		//initialize the Relt algorithm
+		Relt relt = new Relt(v.getTree(), 800,800);
 		
-		ReltDraw drawComponent = new ReltDraw(relt.computeAreas(),10,10);
+		//let it draw with a margin of 5 pixels to the left and to the top
+		
+		ReltDraw drawComponent = new ReltDraw(relt.computeAreas(),5,5);
 
 		j.add(drawComponent);
 		
-		j.setSize(550,550);
+		j.setSize(840,840);
 		j.setLocationRelativeTo(null);
 		
 		j.setVisible(true);

@@ -1,7 +1,11 @@
 package org.agilissimo.relt;
 import java.awt.geom.Point2D;
 
-
+/**
+ * Helper class to store and manage 2D points
+ * @author ios
+ *
+ */
 public class Point extends Point2D {
 
 	private double x;

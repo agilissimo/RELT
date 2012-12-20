@@ -1,5 +1,6 @@
 package org.agilissimo.tree;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -11,10 +12,15 @@ public class BasicNode implements Node {
 	protected int level;
 	
 	protected  Node parent;
-	protected Set<Node> children;
+	protected ArrayList<Node> children;
 
 	public BasicNode() {
-		children = new HashSet<Node>();
+		children = new ArrayList<Node>();
+	}
+	
+	public BasicNode(Item item) {
+		children = new ArrayList<Node>();
+		this.setItem(item);
 	}
 	
 	public BasicNode(boolean isroot) {
@@ -61,8 +67,8 @@ public class BasicNode implements Node {
 		this.item = item;
 	}
 
-	public Set<Node> getChildren() {
-		return (Set<Node>) children;
+	public ArrayList<Node> getChildren() {
+		return  children;
 	}
 	
 	public Node getParent() {

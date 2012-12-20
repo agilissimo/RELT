@@ -1,5 +1,20 @@
+/*
+ * Copyright 2012 Ioannis Strikos
+ * 
+ * This file is part of agilissimo
+ * agilissimo is free software: you can redistribute it and/or modify it under the terms of the 
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of 
+ * the License, or (at your option) any later version. You should have received a copy of the 
+ * GNU General Public License along with agilissimo. 
+ * If not, see http://www.gnu.org/licenses/.
+ */
 package org.agilissimo.relt;
 
+/**
+ * Helper class to track the left and right edges of a level and draw the nodes
+ * @author ios
+ *
+ */
 class LineTracker {
 	private Point up;
 	private Point left;

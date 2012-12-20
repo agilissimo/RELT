@@ -2,5 +2,6 @@ This is an implementation of the RELT algorithm published by Jie Hao1, Chad Alle
 
 The main motivation behind this is to be able to display a tree or some hierarchical structure on a small display. With regards to agilissimo, being able to display a story with features, tasks, subtasks, bus and impediments overviw is a feature that we find very practical.
 
-The current version has known bugs, so that the level is not always correctly drawn after level 2, but a new version which fixes this bug is planned for this
- week
+You can find a more detailed documentation at
+http://agilissimo.org/index.php/blogs/work-in-progress/277-radial-edgeless-tree-relt-first-implementation
+

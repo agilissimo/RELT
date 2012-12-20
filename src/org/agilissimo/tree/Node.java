@@ -1,5 +1,6 @@
 package org.agilissimo.tree;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public interface Node {
 	public void setLevel(int level);
 	public Item getItem();
 	public void setItem(Item item);
-	public Set<Node> getChildren();
+	public ArrayList<Node> getChildren();
 	public int numberOfChildren();
 	public Node getParent();
 	public void setParent(Node parent);
